@@ -53,6 +53,18 @@ public class MyRedisCore {
         return "1";
     }
 
+    // EXISTS
+    public String exists(String key) {
+        RedisValue redisValue = store.get(key);
+        if (redisValue == null) return "0";
+        if (redisValue.isExpired()) {
+            store.remove(key);
+            return "0";
+        }
+        return "1";
+    }
+
+
     // helper inner class
     private static class RedisValue {
         private final String value;
