@@ -99,5 +99,9 @@ public class MyRedisCore {
 
         System.out.println(redis.del("name"));                 // 1
         System.out.println(redis.get("name"));                 // (nil)
+
+        redis.set("name","arun",2);            //time to live 2 seconds
+        System.out.println(redis.exists("name"));               //returns 1
+        
     }
 }
