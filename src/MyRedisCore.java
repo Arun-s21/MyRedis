@@ -14,6 +14,31 @@ public class MyRedisCore {
     // store now maps key -> RedisValue (value + expiry)
     private ConcurrentHashMap<String, RedisValue> store = new ConcurrentHashMap<>();
 
+     // helper inner class
+    private static class RedisValue {
+        private final String value;
+        private final Long expiryTime;
+
+        public RedisValue(String value, Long expiryTime) {
+            this.value = value;
+            this.expiryTime = expiryTime;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+         public Long getExpiryTime() {
+            return expiryTime;
+        }
+
+        public boolean isExpired() {
+            if (expiryTime == null) return false;
+            return System.currentTimeMillis() > expiryTime;
+        }
+    }
+
+
     // SET without expiry
     public String set(String key, String value) {
         store.put(key, new RedisValue(value, null));
@@ -80,30 +105,7 @@ public class MyRedisCore {
 
 
 
-    // helper inner class
-    private static class RedisValue {
-        private final String value;
-        private final Long expiryTime;
-
-        public RedisValue(String value, Long expiryTime) {
-            this.value = value;
-            this.expiryTime = expiryTime;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-         public Long getExpiryTime() {
-            return expiryTime;
-        }
-
-        public boolean isExpired() {
-            if (expiryTime == null) return false;
-            return System.currentTimeMillis() > expiryTime;
-        }
-    }
-
+   
     // Quick test
     public static void main(String[] args) throws InterruptedException {
         MyRedisCore redis = new MyRedisCore();
