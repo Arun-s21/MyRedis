@@ -63,6 +63,21 @@ public class MyRedisCore {
         }
         return "1";
     }
+    
+    // TTL(this function returns -2 if the key doesnt exits, -1 if the key is epxired, and remaining time in seconds if key exists and havent expired)
+    public String ttl(String key) {
+        RedisValue redisValue = store.get(key);
+        if (redisValue == null) return "-2"; // key doesn't exist
+        if (redisValue.isExpired()) {
+            store.remove(key);
+            return "-2";
+        }
+        if (redisValue.getExpiryTime() == null) return "-1"; // no expiry
+        long remainingMillis = redisValue.getExpiryTime() - System.currentTimeMillis();
+        long remainingSeconds = remainingMillis / 1000;
+        return String.valueOf(remainingSeconds >= 0 ? remainingSeconds : -2);
+    }
+
 
 
     // helper inner class
@@ -79,6 +94,10 @@ public class MyRedisCore {
             return value;
         }
 
+         public Long getExpiryTime() {
+            return expiryTime;
+        }
+
         public boolean isExpired() {
             if (expiryTime == null) return false;
             return System.currentTimeMillis() > expiryTime;
@@ -89,19 +108,29 @@ public class MyRedisCore {
     public static void main(String[] args) throws InterruptedException {
         MyRedisCore redis = new MyRedisCore();
 
-        System.out.println(redis.set("name", "arun"));         // OK
-        System.out.println(redis.get("name"));                 // arun
+        // System.out.println(redis.set("name", "arun"));         // OK
+        // System.out.println(redis.get("name"));                 // arun
 
-        System.out.println(redis.set("temp", "123", 2));       // OK (expires in 2s)
-        System.out.println(redis.get("temp"));                 // 123
-        Thread.sleep(3000);
-        System.out.println(redis.get("temp"));                 // (nil)
+        // System.out.println(redis.set("temp", "123", 2));       // OK (expires in 2s)
+        // System.out.println(redis.get("temp"));                 // 123
+        // Thread.sleep(3000);
+        // System.out.println(redis.get("temp"));                 // (nil)
 
-        System.out.println(redis.del("name"));                 // 1
-        System.out.println(redis.get("name"));                 // (nil)
+        // System.out.println(redis.del("name"));                 // 1
+        // System.out.println(redis.get("name"));                 // (nil)
 
-        redis.set("name","arun",2);            //time to live 2 seconds
-        System.out.println(redis.exists("name"));               //returns 1
+        // redis.set("name","arun",2);            //time to live 2 seconds
+        // System.out.println(redis.exists("name"));               //returns 1
+
+        //ttl test
+        redis.set("name", "arun", 5); // expires in 5 seconds
+        System.out.println(redis.ttl("name")); // ~5
+        Thread.sleep(2000);
+        System.out.println(redis.ttl("name")); // ~3
+        Thread.sleep(6000);
+        System.out.println(redis.ttl("name")); // -2 (expired)
+        redis.set("permanent", "data");
+        System.out.println(redis.ttl("permanent")); // -1 (no expiry)
         
     }
 }
