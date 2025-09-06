@@ -18,13 +18,18 @@ public class MyRedisCore {
 
      // helper inner class
     private static class RedisValue {
-        private final String value;
+        private String value;
         private final Long expiryTime; 
 
         public RedisValue(String value, Long expiryTime) {
             this.value = value;
             this.expiryTime = expiryTime;
         }
+
+        public void setValue(String newValue) {
+            this.value = newValue;
+        }
+
 
         public String getValue() {
             return value;
