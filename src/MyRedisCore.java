@@ -112,7 +112,9 @@ public class MyRedisCore {
     }
 
     //adding counters for ratelimiting
-
+    //here Redis.set("counter",10)--this sets the key counter with a value 10
+    //redis.incr("counter") -- increases the value of this counter from 10 to 11
+    //redis.decr("counter") -- decreases the value of this counter again from 11 to 10
 
     // INCR
     public String incr(String key) {
