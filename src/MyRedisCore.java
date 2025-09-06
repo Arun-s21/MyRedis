@@ -14,10 +14,12 @@ public class MyRedisCore {
     // store now maps key -> RedisValue (value + expiry)
     private ConcurrentHashMap<String, RedisValue> store = new ConcurrentHashMap<>();
 
+
+
      // helper inner class
     private static class RedisValue {
         private final String value;
-        private final Long expiryTime;
+        private final Long expiryTime; 
 
         public RedisValue(String value, Long expiryTime) {
             this.value = value;
@@ -66,6 +68,7 @@ public class MyRedisCore {
 
         return redisValue.getValue();
     }
+    
 
     // DEL
     public String del(String key) {
@@ -102,6 +105,47 @@ public class MyRedisCore {
         long remainingSeconds = remainingMillis / 1000;
         return String.valueOf(remainingSeconds >= 0 ? remainingSeconds : -2);
     }
+
+    //adding counters for ratelimiting
+
+
+    // INCR
+    public String incr(String key) {
+        RedisValue rv = store.get(key);
+        if (rv == null || rv.isExpired()) {
+            store.put(key, new RedisValue("1", null));
+            return "1";
+        }
+        try {
+            int intValue = Integer.parseInt(rv.getValue());
+            intValue++;
+            rv.setValue(String.valueOf(intValue));
+            return rv.getValue();
+        } catch (NumberFormatException e) {
+            return "(error) value is not an integer";
+        }
+    }
+
+    // DECR
+    public String decr(String key) {
+        RedisValue rv = store.get(key);
+        if (rv == null || rv.isExpired()) {
+            store.put(key, new RedisValue("-1", null));
+            return "-1";
+        }
+        try {
+            int intValue = Integer.parseInt(rv.getValue());
+            intValue--;
+            rv.setValue(String.valueOf(intValue));
+            return rv.getValue();
+        } catch (NumberFormatException e) {
+            return "(error) value is not an integer";
+        }
+    }
+
+
+
+
 
 
 
