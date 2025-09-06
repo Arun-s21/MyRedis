@@ -184,6 +184,13 @@ public class MyRedisCore {
         System.out.println(redis.ttl("name")); // -2 (expired)
         redis.set("permanent", "data");
         System.out.println(redis.ttl("permanent")); // -1 (no expiry)
+
+         // Counter test
+        redis.set("counter", "10");
+        System.out.println(redis.incr("counter")); // 11
+        System.out.println(redis.incr("counter")); // 12
+        System.out.println(redis.decr("counter")); // 11
+        System.out.println(redis.get("counter"));  // 11
         
     }
 }
