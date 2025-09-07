@@ -157,23 +157,23 @@ public class MyRedisCore {
 
 
    
-    // Quick test
+    // example testcases 
     public static void main(String[] args) throws InterruptedException {
         MyRedisCore redis = new MyRedisCore();
 
-        // System.out.println(redis.set("name", "arun"));         // OK
-        // System.out.println(redis.get("name"));                 // arun
+        System.out.println(redis.set("name", "arun"));         // OK
+        System.out.println(redis.get("name"));                 // arun
 
-        // System.out.println(redis.set("temp", "123", 2));       // OK (expires in 2s)
-        // System.out.println(redis.get("temp"));                 // 123
-        // Thread.sleep(3000);
-        // System.out.println(redis.get("temp"));                 // (nil)
+        System.out.println(redis.set("temp", "123", 2));       // OK (expires in 2s)
+        System.out.println(redis.get("temp"));                 // 123
+        Thread.sleep(3000);
+        System.out.println(redis.get("temp"));                 // (nil)
 
-        // System.out.println(redis.del("name"));                 // 1
-        // System.out.println(redis.get("name"));                 // (nil)
+        System.out.println(redis.del("name"));                 // 1
+        System.out.println(redis.get("name"));                 // (nil)
 
-        // redis.set("name","arun",2);            //time to live 2 seconds
-        // System.out.println(redis.exists("name"));               //returns 1
+        redis.set("name","arun",2);            //time to live 2 seconds
+        System.out.println(redis.exists("name"));               //returns 1
 
         //ttl test
         redis.set("name", "arun", 5); // expires in 5 seconds
