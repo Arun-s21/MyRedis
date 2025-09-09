@@ -190,7 +190,8 @@ public class MyRedisCore {
         System.out.println(redis.incr("counter")); // 11
         System.out.println(redis.incr("counter")); // 12
         System.out.println(redis.decr("counter")); // 11
-        System.out.println(redis.get("counter"));  // 11
+        System.out.println(redis.decr("counter"));  // 10
+        System.out.println(redis.get("counter"));  // 10
         
     }
 }
