@@ -1,3 +1,5 @@
+package com.myredis;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 //redis is an in memory data store which is checked before the api makes a request to the backend IT IS USED FOR RATE LIMITING
